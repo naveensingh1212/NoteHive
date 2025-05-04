@@ -5,7 +5,7 @@ import app from './app.js';
 dotenv.config();
 
 const DB_NAME = process.env.DB_NAME;
-const PORT = process.env.PORT || 8000; // Set the port to either the environment variable or fallback to 8000
+const PORT = process.env.PORT || 8000; // Default to 8000, but Render will provide its own port
 
 connectDB(DB_NAME)
   .then(() => {
