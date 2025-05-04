@@ -5,7 +5,8 @@ import { authenticator } from  "../middleware/auth.middleware.js";
 const router = express.Router();
 
 // Public Routes
-router.post("/register", registerUser);
+router.post("/signup", registerUser);
+
 router.post("/login", loginUser);
 
 //protected routes

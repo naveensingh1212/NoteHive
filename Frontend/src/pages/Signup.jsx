@@ -1,34 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance"; // Assuming you have this setup
+import axiosInstance from "../utils/axiosInstance";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState(""); // State to store error messages
+  const [formData, setFormData] = useState({ fullname: "", email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setError(""); // Reset error when user changes input
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = formData;
+    const { fullname, email, password } = formData;
 
-    // Basic validation
-    if (!email || !password) {
-      setError("Please fill in both email and password.");
+    if (!fullname || !email || !password) {
+      setError("Please fill in all fields.");
       return;
     }
 
     try {
-      const response = await axiosInstance.post("/api/users/signup", { email, password });
+      const response = await axiosInstance.post("/api/users/signup", {
+        fullname,
+        email,
+        password,
+      });
       console.log("Signup response:", response);
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         navigate("/dashboard");
+      } else {
+        navigate("/login"); // Redirect to login if signup successful but no token
       }
     } catch (err) {
       console.error("Signup failed:", err);
@@ -47,10 +52,17 @@ const Signup = () => {
         className="bg-white p-8 rounded-xl shadow-md w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Signup</h2>
-        
-        {/* Error message display */}
+
         {error && <div className="text-red-600 mb-4">{error}</div>}
-        
+
+        <input
+          type="text"
+          name="fullname"
+          placeholder="Full Name"
+          value={formData.fullname}
+          onChange={handleChange}
+          className="w-full p-3 mb-4 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+        />
         <input
           type="email"
           name="email"

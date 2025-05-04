@@ -10,7 +10,7 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: 'https://note-hive-ten.vercel.app', // Frontend URL
+  origin: 'https://note-hive-ten.vercel.app' ||  'http://localhost:5173', // Frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
