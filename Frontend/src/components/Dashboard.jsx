@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
+import axiosInstance from "../utils/axiosInstance"; // import the axios instance
 
 const Dashboard = () => {
   const [notes, setNotes] = useState([]);
@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   const fetchNotes = async () => {
     try {
-      const res = await axios.get("/api/notes", {
+      const res = await axiosInstance.get("/api/notes", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNotes(res.data);
@@ -34,7 +34,7 @@ const Dashboard = () => {
   const handleAddNote = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/notes/create", newNote, {
+      await axiosInstance.post("/api/notes/create", newNote, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewNote({ title: "", description: "", tag: "" });
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/notes/${id}`, {
+      await axiosInstance.delete(`/api/notes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchNotes();

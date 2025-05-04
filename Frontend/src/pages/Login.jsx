@@ -1,38 +1,44 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import navigate
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance"; // Assuming you have this setup
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const navigate = useNavigate(); // ✅ Create navigate instance
+  const [error, setError] = useState(""); // State to store error messages
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setError(""); // Reset error when user changes input
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = formData; // ✅ Extract from state
-  
+    const { email, password } = formData;
+
+    // Basic validation
+    if (!email || !password) {
+      setError("Please fill in both email and password.");
+      return;
+    }
+
     try {
-      const response = await axios.post("/api/users/login", { email, password });
+      const response = await axiosInstance.post("/api/users/login", { email, password });
       console.log("Login response:", response);
-  
+
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/dashboard"); // ✅ Make sure 'navigate' is defined
+        navigate("/dashboard");
       }
     } catch (err) {
       console.error("Login failed:", err);
       if (err.response) {
-        console.error("Error response:", err.response.data);
-        alert(err.response.data.message || "Login failed");
+        setError(err.response.data.message || "Login failed");
       } else {
-        alert("Login failed: Network or server issue");
+        setError("Login failed: Network or server issue");
       }
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -41,6 +47,10 @@ const Login = () => {
         className="bg-white p-8 rounded-xl shadow-md w-full max-w-md"
       >
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login</h2>
+        
+        {/* Error message display */}
+        {error && <div className="text-red-600 mb-4">{error}</div>}
+        
         <input
           type="email"
           name="email"
