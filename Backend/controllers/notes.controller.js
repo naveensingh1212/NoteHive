@@ -5,13 +5,13 @@ import User from "../models/user.model.js";
 export const createNote = async (req, res) => {
     try {
         const { title, description, tag } = req.body;
-        const userId = req.user.id; // ✅ Use the correct field 'id' from token
+        const userId = req.user.id; 
 
         const newNote = new Note({
             title,
             description,
             tag,
-            user: userId // ✅ Properly assigned user ID
+            user: userId 
         });
 
         await newNote.save();
